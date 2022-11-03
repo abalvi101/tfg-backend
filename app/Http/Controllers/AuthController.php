@@ -2,36 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Province;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
     /**
-     * Handle an authentication attempt.
+     * Handle the register.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function register(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'surname' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required',
+            'c_password' => 'required|same:password',
+            'birthdate' => 'required',
         ]);
- 
-        $data = $request->all();
 
-        $usuario = Usuario::create([
-            'nombre' => $data['nombre'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password'])
-        ]);
- 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
+        if($validator->fails()){
+            return $this->sendError('Error de validación.', $validator->errors());
+        }
+
+        $input = $request->all();
+        $input['password'] = bcrypt($input['password']);
+        $user = User::create($input);
+        $success['token'] =  $user->createToken('MyApp')->plainTextToken;
+        $success['name'] =  $user->name;
+
+        return $this->sendResponse($success, 'Usuario registrado correctamente.');
     }
 
     /**
@@ -42,27 +50,24 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
- 
-        if (Auth::attempt($credentials)) {
-            $user = $request->user();
- 
-            return response()->json(
-                [
-                    'success' => true,
-                    'user' => $user
-                ]
-            );
+        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+            $user = Auth::user();
+            $success['token'] =  $user->createToken('MyApp')->plainTextToken;
+            $success['name'] =  $user->name;
+            $success['surname'] =  $user->surname;
+
+            return $this->sendResponse($success, 'User login successfully.');
         }
- 
-        return response()->json(
-            [
-                'success' => false,
-                'message' => 'The provided credentials do not match our records.',
-            ]
-        );
+        else{
+            return $this->sendError('Unauthorized.', ['error'=>'Unauthorized'], 401);
+        }
+    }
+
+    /**
+     * test
+     */
+    public function cities(Request $request)
+    {
+        return $this->sendResponse(Province::find($request->id)->cities, 'All the cities');
     }
 }

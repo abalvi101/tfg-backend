@@ -24,11 +24,14 @@ return new class extends Migration
             $table->unsignedBigInteger('breed_id')->nullable();
             $table->unsignedBigInteger('size_id')->nullable();
             $table->float('weight')->nullable();
+            $table->boolean('gender')->nullable(); // TRUE => MALE / FALSE => FEMALE
+            $table->boolean('neutered')->nullable(); // CASTRADO
             $table->string('color');
             $table->string('description')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->foreign('association_id')->references('id')->on('associations');
             $table->foreign('breed_id')->references('id')->on('breeds');
             $table->foreign('size_id')->references('id')->on('animal_sizes');

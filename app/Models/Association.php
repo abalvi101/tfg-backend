@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable
+class Association extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
@@ -20,11 +19,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'surname',
         'email',
         'password',
-        'birthdate',
-        'gender',
+        'about_us',
+        'province_id',
+        'city_id',
+        'postal_code',
         'profile_image',
     ];
 
@@ -56,7 +56,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the city of the animal.
+     * Get the city of the user.
      */
     public function city()
     {
@@ -64,7 +64,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the province of the animal.
+     * Get the province of the user.
      */
     public function province()
     {

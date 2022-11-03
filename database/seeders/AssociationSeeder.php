@@ -4,9 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
-class AnimalSpecieSeeder extends Seeder
+class AssociationSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,9 +14,6 @@ class AnimalSpecieSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('animal_species')->insert([
-            ['name' => 'dog'],
-            ['name' => 'cat'],
-        ]);
+        //
     }
 }

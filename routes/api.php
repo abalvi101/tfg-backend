@@ -19,10 +19,13 @@ use App\Http\Controllers\AuthController;
 //     return $request->user();
 // });
 
-Route::post('/user', [AuthController::class, 'login']);
+Route::controller(AuthController::class)->group(function(){
+    Route::post('register', 'register');
+    Route::post('login', 'login');
+});
 
 Route::post('/tokens/create', function (Request $request) {
     $token = $request->user()->createToken($request->token_name);
- 
+
     return ['token' => $token->plainTextToken];
 });
