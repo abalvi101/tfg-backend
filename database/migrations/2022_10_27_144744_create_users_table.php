@@ -22,7 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('province_id')->nullable();
             $table->unsignedBigInteger('city_id')->nullable();
             $table->string('password');
-            $table->date('birthdate');
+            $table->date('birthday');
             $table->boolean('gender')->nullable(); // TRUE => MAN / FALSE => WOMAN
             $table->string('profile_image')->nullable();
             $table->rememberToken();

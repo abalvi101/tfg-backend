@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class BreedSeeder extends Seeder
 {
@@ -102,7 +102,7 @@ class BreedSeeder extends Seeder
                 'animal_specie_id' => 1,
             ],
             // CAT BREEDS
-            
+
             [
                 'name' => 'bengal',
                 'animal_specie_id' => 2,

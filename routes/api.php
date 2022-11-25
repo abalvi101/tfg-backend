@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\AnimalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LocationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +21,24 @@ use App\Http\Controllers\AuthController;
 //     return $request->user();
 // });
 
-Route::controller(AuthController::class)->group(function(){
-    Route::post('register', 'register');
-    Route::post('login', 'login');
+Route::prefix('auth')->group(function () {
+    Route::controller(AuthController::class)->group(function () {
+        Route::post('/register', 'register');
+        Route::post('/login', 'login');
+        Route::get('/getUser', 'getUser');
+    });
 });
+
+Route::prefix('location')->group(function () {
+    Route::controller(LocationController::class)->group(function () {
+        Route::get('/getProvinces', 'getProvinces');
+        Route::get('/getCities', 'getCities');
+    });
+});
+
+// Route::post('user/login', [AuthController::class, 'login']);
+
+Route::get('animals/index', [AnimalController::class, 'index']);
 
 Route::post('/tokens/create', function (Request $request) {
     $token = $request->user()->createToken($request->token_name);

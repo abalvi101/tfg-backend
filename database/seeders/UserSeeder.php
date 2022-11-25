@@ -21,16 +21,16 @@ class UserSeeder extends Seeder
             [
                 'name'      => 'admin',
                 'surname'      => 'admin',
-                'email'     => 'admin@admin.admin',
+                'email'     => 'admin@admin.com',
                 'password'  => Hash::make('admin'),
-                'birthdate' => Carbon::now()->addYears(-23),
+                'birthday' => Carbon::now()->addYears(-23),
             ],
             [
                 'name'      => 'user',
                 'surname'      => 'user',
-                'email'     => 'user@user.user',
+                'email'     => 'user@user.com',
                 'password'  => Hash::make('user'),
-                'birthdate' => Carbon::now()->addYears(-21),
+                'birthday' => Carbon::now()->addYears(-21),
             ],
         ]);
     }
