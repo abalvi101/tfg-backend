@@ -36,7 +36,14 @@ Route::prefix('location')->group(function () {
     });
 });
 
-// Route::post('user/login', [AuthController::class, 'login']);
+Route::prefix('animals')->group(function () {
+    Route::controller(AnimalController::class)->group(function () {
+        Route::post('/getFilteredAnimals', 'getFilteredAnimals');
+        Route::get('/getSpecies', 'getAnimalSpecies');
+        Route::get('/getBreeds', 'getAnimalBreeds');
+        Route::get('/getSizes', 'getAnimalSizes');
+    });
+});
 
 Route::get('animals/index', [AnimalController::class, 'index']);
 
