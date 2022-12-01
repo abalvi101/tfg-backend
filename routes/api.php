@@ -42,6 +42,7 @@ Route::prefix('animals')->group(function () {
         Route::get('/getSpecies', 'getAnimalSpecies');
         Route::get('/getBreeds', 'getAnimalBreeds');
         Route::get('/getSizes', 'getAnimalSizes');
+        Route::post('/getAnimalInfo', 'getAnimalInfo');
     });
 });
 

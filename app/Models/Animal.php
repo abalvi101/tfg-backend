@@ -59,7 +59,7 @@ class Animal extends Model
      */
     public function specie()
     {
-        return $this->breed()->animalSpecie();
+        return $this->belongsTo(AnimalSpecie::class, 'animal_specie_id');
     }
 
     /**

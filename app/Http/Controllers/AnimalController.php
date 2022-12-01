@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AnimalResource;
 use App\Models\Animal;
 use App\Models\AnimalSize;
 use App\Models\AnimalSpecie;
@@ -34,6 +35,19 @@ class AnimalController extends Controller
         } else {
             return $this->sendResponse($animals, 'No hay resultados');
         }
+    }
+
+    public function getAnimalInfo(Request $request) {
+        $animal = new AnimalResource(Animal::find($request->animal_id));
+        if ($animal) {
+            $animal['owner'] = false;
+            $user = auth('sanctum')->user();
+            if ($user && class_basename($user) === 'Association' && $animal->association_id === $user->id) {
+                $animal['owner'] = true;
+            }
+            return $this->sendResponse($animal, 'Datos del animal');
+        }
+        return $this->sendResponse($animal, 'No hay resultados');
     }
 
     public function getAnimalSpecies() {

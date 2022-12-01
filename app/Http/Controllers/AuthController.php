@@ -98,14 +98,12 @@ class AuthController extends Controller
      */
     public function getUser(Request $request)
     {
-        // $token = PersonalAccessToken::findToken($request->token);
-        // if ($token){
         $user = auth('sanctum')->user();
         if ($user) {
             $success['token'] = $request->bearerToken();
             $success['name'] = $user->name;
             $success['surname'] = $user->surname;
-            $success['role'] = 'user';
+            $success['role'] = class_basename($user) === 'User' ? 'user' : 'association';
             return $this->sendResponse($success, 'User login successfully.');
         }
         // }
