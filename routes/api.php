@@ -26,6 +26,11 @@ Route::prefix('auth')->group(function () {
         Route::post('/register', 'register');
         Route::post('/login', 'login');
         Route::get('/getUser', 'getUser');
+        Route::get('/getUserInfo', 'getUserInfo');
+        Route::post('/submitImage', 'storageProfileImage');
+        Route::middleware(['auth:sanctum'])->group(function () {
+            Route::post('/update', 'update');
+        });
     });
 });
 
@@ -43,6 +48,9 @@ Route::prefix('animals')->group(function () {
         Route::get('/getBreeds', 'getAnimalBreeds');
         Route::get('/getSizes', 'getAnimalSizes');
         Route::post('/getAnimalInfo', 'getAnimalInfo');
+        Route::middleware(['auth:sanctum'])->group(function () {
+            Route::post('/create', 'create');
+        });
     });
 });
 

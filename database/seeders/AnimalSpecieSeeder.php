@@ -16,8 +16,8 @@ class AnimalSpecieSeeder extends Seeder
     public function run()
     {
         DB::table('animal_species')->insert([
-            ['name' => 'dog'],
-            ['name' => 'cat'],
+            ['name' => 'Perro'],
+            ['name' => 'Gato'],
         ]);
     }
 }

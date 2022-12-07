@@ -18,46 +18,46 @@ class AnimalSizeSeeder extends Seeder
         DB::table('animal_sizes')->insert([
             // DOG SIZES
             [
-                'name'             => 'extra small',
+                'name'             => 'Muy pequeño',
                 'code'             => 'XS',
-                'animal_specie_id' => 1,
+                // 'animal_specie_id' => 1,
             ],
             [
-                'name'             => 'small',
+                'name'             => 'Pequeño',
                 'code'             => 'S',
-                'animal_specie_id' => 1,
+                // 'animal_specie_id' => 1,
             ],
             [
-                'name'             => 'medium',
+                'name'             => 'Mediano',
                 'code'             => 'M',
-                'animal_specie_id' => 1,
+                // 'animal_specie_id' => 1,
             ],
             [
-                'name'             => 'large',
+                'name'             => 'Grande',
                 'code'             => 'L',
-                'animal_specie_id' => 1,
+                // 'animal_specie_id' => 1,
             ],
             [
-                'name'             => 'extra large',
+                'name'             => 'Muy grande',
                 'code'             => 'XL',
-                'animal_specie_id' => 1,
+                // 'animal_specie_id' => 1,
             ],
             // CAT SIZES
-            [
-                'name'             => 'small',
-                'code'             => 'S',
-                'animal_specie_id' => 2,
-            ],
-            [
-                'name'             => 'medium',
-                'code'             => 'M',
-                'animal_specie_id' => 2,
-            ],
-            [
-                'name'             => 'large',
-                'code'             => 'L',
-                'animal_specie_id' => 2,
-            ],
+            // [
+            //     'name'             => 'small',
+            //     'code'             => 'S',
+            //     'animal_specie_id' => 2,
+            // ],
+            // [
+            //     'name'             => 'medium',
+            //     'code'             => 'M',
+            //     'animal_specie_id' => 2,
+            // ],
+            // [
+            //     'name'             => 'large',
+            //     'code'             => 'L',
+            //     'animal_specie_id' => 2,
+            // ],
         ]);
     }
 }

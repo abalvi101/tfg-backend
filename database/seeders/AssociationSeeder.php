@@ -19,17 +19,19 @@ class AssociationSeeder extends Seeder
         DB::table('associations')->insert([
             [
                 'name'      => 'admin',
-                'email'     => 'admin@admin.admin',
+                'email'     => 'admin@admin.com',
                 'password'  => Hash::make('admin'),
                 'province_id' => 15,
                 'city_id'     => 19,
+                'about_us'    => '',
             ],
             [
-                'name'      => 'Athisa',
-                'email'     => 'athisa@athisa.athisa',
-                'password'  => Hash::make('athisa'),
+                'name'        => 'Athisa',
+                'email'       => 'athisa@athisa.com',
+                'password'    => Hash::make('athisa'),
                 'province_id' => 15,
                 'city_id'     => 13,
+                'about_us'    => 'Somos una asociatión protectora de animales de Chiclana. Nos dedicamos a recoger a todos los animales sin hogar que nuestras instalaciones nos permiten y buscarles una familia que lo quiera y cuide como se merece.',
             ],
             [
                 'name'      => 'Gatita Lucía',
@@ -37,6 +39,7 @@ class AssociationSeeder extends Seeder
                 'password'  => Hash::make('gatitalucia'),
                 'province_id' => 15,
                 'city_id'     => 21,
+                'about_us'    => '',
             ],
             [
                 'name'      => 'Protectora 2',
@@ -44,6 +47,7 @@ class AssociationSeeder extends Seeder
                 'password'  => Hash::make('protectora2'),
                 'province_id' => 15,
                 'city_id'     => 34,
+                'about_us'    => '',
             ],
         ]);
     }
