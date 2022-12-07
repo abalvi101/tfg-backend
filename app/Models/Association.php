@@ -48,15 +48,7 @@ class Association extends Authenticatable
     ];
 
     /**
-     * Get the role of the user.
-     */
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
-
-    /**
-     * Get the city of the user.
+     * Get the city of the association.
      */
     public function city()
     {
@@ -64,10 +56,18 @@ class Association extends Authenticatable
     }
 
     /**
-     * Get the province of the user.
+     * Get the province of the association.
      */
     public function province()
     {
         return $this->belongsTo(Province::class);
+    }
+
+    /**
+     * Get the animals of the association.
+     */
+    public function animals()
+    {
+        return $this->hasMany(Animal::class);
     }
 }

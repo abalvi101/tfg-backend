@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\AnimalResource;
+use App\Http\Resources\AnimalsListResource;
 use App\Models\Animal;
 use App\Models\AnimalSize;
 use App\Models\AnimalSpecie;
@@ -18,17 +19,19 @@ class AnimalController extends Controller
     }
 
     public function getFilteredAnimals(Request $request) {
-        $animals = Animal::query()
-        ->when($request->specie, function ($query, $specie) {
-            $query->where('animal_specie_id', '=', $specie);
-        })
-        ->when($request->breed, function ($query, $breed) {
-            $query->where('breed_id', '=', $breed);
-        })
-        ->when($request->size, function ($query, $size) {
-            $query->where('size_id', '=', $size);
-        })
-        ->get();
+        $animals = AnimalsListResource::collection(
+            Animal::query()
+            ->when($request->specie, function ($query, $specie) {
+                $query->where('animal_specie_id', '=', $specie);
+            })
+            ->when($request->breed, function ($query, $breed) {
+                $query->where('breed_id', '=', $breed);
+            })
+            ->when($request->size, function ($query, $size) {
+                $query->where('size_id', '=', $size);
+            })
+            ->get()
+        );
 
         if (count($animals)) {
             return $this->sendResponse($animals, 'Lista de animales filtrada');
@@ -48,6 +51,21 @@ class AnimalController extends Controller
             return $this->sendResponse($animal, 'Datos del animal');
         }
         return $this->sendResponse($animal, 'No hay resultados');
+    }
+
+    public function create(Request $request) {
+        $data = $request->all();
+        $association = auth('sanctum')->user();
+        if (!$association || class_basename($association) !== 'Association') {
+            return $this->sendError('Operación no autorizada', 'Operación no autorizada', 401);
+        }
+
+        $animal = new Animal;
+        $animal->fill($data);
+        $animal['association_id'] = $association->id;
+        $animal->save();
+
+        return $this->sendResponse($animal, 'Animal creado correctamente');
     }
 
     public function getAnimalSpecies() {

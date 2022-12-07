@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AnimalResource extends JsonResource
+class AnimalsListResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -26,15 +26,13 @@ class AnimalResource extends JsonResource
             'gender' => $this->gender,
             'neutered' => $this->neutered,
             'color' => $this->color,
-            'description' => $this->description,
             'image' => $this->image,
-            'province' => $this->province->name,
-            'city' => $this->city->name,
-            'specie' => $this->specie->name,
-            'breed' => $this->breed->name,
+            'province' => $this->province,
+            'city' => $this->city,
+            'specie' => $this->specie,
+            'breed' => $this->breed,
             'size' => $this->size,
-            'diseases' => $this->diseases,
-            'fostering' => $this->fostering,
+            'fostering' => !is_null($this->fostering),
         ];
     }
 }

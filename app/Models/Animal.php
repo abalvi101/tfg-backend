@@ -16,10 +16,11 @@ class Animal extends Model
      */
     protected $fillable = [
         'name',
-        'birthdate',
+        'birthday',
         'entry_date',
         'province_id',
         'city_id',
+        'animal_specie_id',
         'breed_id',
         'size_id',
         'weight',
@@ -83,7 +84,7 @@ class Animal extends Model
      */
     public function diseases()
     {
-        return $this->hasMany(AnimalDisease::class);
+        return $this->hasMany(AnimalDisease::class, 'animal_id');
     }
 
     /**
