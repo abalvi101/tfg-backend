@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserProfileResource;
 use App\Models\Association;
 use App\Models\Province;
 use App\Models\User;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
@@ -64,6 +67,8 @@ class AuthController extends Controller
             $account = Association::create($input);
         }
 
+        $this->storageProfileImage($request);
+
         $success['token'] =  $account->createToken('MyApp')->plainTextToken;
         $success['name'] =  $account->name;
 
@@ -104,9 +109,72 @@ class AuthController extends Controller
             $success['name'] = $user->name;
             $success['surname'] = $user->surname;
             $success['role'] = class_basename($user) === 'User' ? 'user' : 'association';
-            return $this->sendResponse($success, 'User login successfully.');
+            return $this->sendResponse($success, 'User data.');
         }
         // }
         return $this->sendError('Unauthorized.', ['error'=>'Unauthorized'], 401);
+    }
+
+    /**
+     * Get the user info from the access token
+     */
+    public function getUserInfo(Request $request)
+    {
+        $account = auth('sanctum')->user();
+        $user = new UserProfileResource($account);
+        // $user = auth('sanctum')->user();
+        if ($user) {
+            return $this->sendResponse($user, 'User data.');
+        }
+        return $this->sendError('No autorizado.', ['error'=>'Unauthorized'], 401);
+    }
+
+
+    public function storageProfileImage(Request $request) {
+        if (!$request->image) {
+            return;
+        }
+        $image_64 = $request->image; //your base64 encoded data
+        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+        $replace = substr($image_64, 0, strpos($image_64, ',')+1);
+        // find substring fro replace here eg: data:image/png;base64,
+        $image = str_replace($replace, '', $image_64);
+        $image = str_replace(' ', '+', $image);
+
+
+        $account = auth('sanctum')->user();
+        $role = class_basename($account) === 'User' ? 'user' : 'association';
+        $image_name = $role.'/'.$account->id.'-'.time().'.'.$extension;
+        if ($role === 'user') {
+            $user = User::find($account->id);
+        } else {
+            $user = Association::find($account->id);
+        }
+
+        Storage::disk('public')->put($image_name, base64_decode($image));
+
+        $user['profile_image'] = env('APP_URL', 'http://localhost').'/storage/'.$image_name;
+        $user->save();
+    }
+
+    /**
+     * update user data
+     */
+    public function update(Request $request)
+    {
+        // return $request->all();
+        $user = auth('sanctum')->user();
+        if ($user) {
+            if (class_basename($user) === 'User') {
+                User::whereId($user->id)->update($request->all());
+                $user = User::find($user->id);
+            } else {
+                Association::whereId($user->id)->update($request->all());
+                $user = Association::find($user->id);
+            }
+            return $this->sendResponse($user, 'Datos actualizados correctamente.');
+        } else {
+            return $this->sendError('No autorizado.', ['error' => 'Unauthorized'], 401);
+        }
     }
 }
