@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -167,7 +168,6 @@ class AuthController extends Controller
      */
     public function update(Request $request)
     {
-        // return $request->all();
         $user = auth('sanctum')->user();
         if ($user) {
             if (class_basename($user) === 'User') {
@@ -178,6 +178,32 @@ class AuthController extends Controller
                 $user = Association::find($user->id);
             }
             return $this->sendResponse($user, 'Datos actualizados correctamente.');
+        } else {
+            return $this->sendError('No autorizado.', ['error' => 'Unauthorized'], 401);
+        }
+    }
+
+    /**
+     * Add or remove an favourite animal
+     */
+    public function favourite(Request $request)
+    {
+        $user = auth('sanctum')->user();
+        if ($user && class_basename($user) === 'User' && $request->animal_id) {
+            $is_favourite = DB::table('animal_user')
+                ->where('animal_id', '=', $request->animal_id)
+                ->where('user_id', '=', $user->id)
+                ->first();
+            if ($is_favourite) {
+                DB::table('animal_user')->where('id', $is_favourite->id)->delete();
+                return $this->sendResponse(null, 'Favorito eliminado.');
+            } else {
+                DB::table('animal_user')->insert([
+                    'animal_id' => $request->animal_id,
+                    'user_id' => $user->id,
+                ]);
+                return $this->sendResponse(null, 'Favorito añadido.');
+            }
         } else {
             return $this->sendError('No autorizado.', ['error' => 'Unauthorized'], 401);
         }

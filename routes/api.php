@@ -30,6 +30,7 @@ Route::prefix('auth')->group(function () {
         Route::post('/submitImage', 'storageProfileImage');
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/update', 'update');
+            Route::post('/favourite', 'favourite');
         });
     });
 });
@@ -52,6 +53,8 @@ Route::prefix('animals')->group(function () {
             Route::post('/create', 'create');
             Route::post('/update', 'update');
             Route::post('/updateImage', 'updateImage');
+            Route::post('/storeFostering', 'storeFostering');
+            Route::post('/deleteFostering', 'deleteFostering');
         });
     });
 });

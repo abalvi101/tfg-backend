@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 
 class AnimalResource extends JsonResource
 {
@@ -17,6 +18,18 @@ class AnimalResource extends JsonResource
     {
         $user = auth('sanctum')->user();
         $owner = class_basename($user) === 'Association' && $this->association->id === $user->id;
+        $favourite = null;
+        if (class_basename($user) === 'User') {
+            if (
+                DB::table('animal_user')
+                    ->where('animal_id', '=', $this->id)
+                    ->where('user_id', '=', $user->id)
+                    ->first()
+            ) {
+                $favourite = true;
+            }
+            $favourite = false;
+        }
 
         return [
             'id' => $this->id,
@@ -44,6 +57,7 @@ class AnimalResource extends JsonResource
             'diseases' => $this->diseases,
             'fostering' => $this->fostering,
             'owner' => $owner,
+            'favourite' => $favourite,
         ];
     }
 }

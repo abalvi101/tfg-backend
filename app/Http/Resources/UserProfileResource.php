@@ -31,6 +31,7 @@ class UserProfileResource extends JsonResource
                 'city_id' => $this->city?->id,
                 'gender' => $this->gender,
                 'profile_image' => $this->profile_image,
+                'favourites' => AnimalsListResource::collection($this->favourites),
             ];
         } else if ($role === 'association') {
             return [

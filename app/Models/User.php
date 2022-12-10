@@ -71,4 +71,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Province::class);
     }
+
+    /**
+     * Get the favourites animals.
+     */
+    public function favourites()
+    {
+        return $this->belongsToMany(Animal::class);
+    }
 }

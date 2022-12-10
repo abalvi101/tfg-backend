@@ -9,6 +9,7 @@ use App\Models\AnimalSize;
 use App\Models\AnimalSpecie;
 use App\Models\Association;
 use App\Models\Breed;
+use App\Models\Fostering;
 use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -136,5 +137,45 @@ class AnimalController extends Controller
             $animal->save();
             return $this->sendResponse(null, 'Imagen de perfil actualizada.');
         }
+    }
+
+    /**
+     * Store/update fostering
+     */
+    public function storeFostering(Request $request) {
+        $animal = Animal::find($request->animal_id);
+        $user = auth('sanctum')->user();
+        if (class_basename($user) === 'Association' && $animal->association_id === $user->id) {
+            $fostering = Fostering::where('animal_id', '=', $request->animal_id);
+            if ($fostering->first()) {
+                $fostering->update($request->data);
+                $fostering = $fostering->first();
+            } else {
+                $fostering = new Fostering;
+                $fostering->fill($request->data);
+                $fostering['animal_id'] = $request->animal_id;
+                $fostering->save();
+            }
+
+            return $this->sendResponse($fostering, 'Acogida actualizada');
+        } else {
+            return $this->sendError('No autorizado.', ['error' => 'Unauthorized'], 401);
+        }
+    }
+
+    /**
+     * Delete fostering
+     */
+    public function deleteFostering(Request $request) {
+        $animal = Animal::find($request->animal_id);
+        $user = auth('sanctum')->user();
+        if (class_basename($user) === 'Association' && $animal->association_id === $user->id) {
+            $fostering = Fostering::where('animal_id', '=', $request->animal_id);
+            if ($fostering->first()) {
+                $fostering->delete();
+                return $this->sendResponse(null, 'Acogida eliminada');
+            }
+        }
+        return $this->sendError('No autorizado.', ['error' => 'Unauthorized'], 401);
     }
 }
