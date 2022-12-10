@@ -15,6 +15,9 @@ class AnimalResource extends JsonResource
      */
     public function toArray($request)
     {
+        $user = auth('sanctum')->user();
+        $owner = class_basename($user) === 'Association' && $this->association->id === $user->id;
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -28,13 +31,19 @@ class AnimalResource extends JsonResource
             'color' => $this->color,
             'description' => $this->description,
             'image' => $this->image,
-            'province' => $this->province->name,
-            'city' => $this->city->name,
-            'specie' => $this->specie->name,
-            'breed' => $this->breed->name,
+            'province' => $this->province,
+            'province_id' => $this->province->id,
+            'city' => $this->city,
+            'city_id' => $this->city->id,
+            'specie' => $this->specie,
+            'animal_specie_id' => $this->specie->id,
+            'breed' => $this->breed,
+            'breed_id' => $this->breed->id,
             'size' => $this->size,
+            'size_id' => $this->size->id,
             'diseases' => $this->diseases,
             'fostering' => $this->fostering,
+            'owner' => $owner,
         ];
     }
 }

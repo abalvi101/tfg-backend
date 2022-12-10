@@ -18,6 +18,7 @@ class UserProfileResource extends JsonResource
         // return class_basename($this->resource) === 'Association';
 
         $role = class_basename($this->resource) === 'User' ? 'user' : 'association';
+
         if ($role === 'user') {
             return [
                 'id' => $this->id,

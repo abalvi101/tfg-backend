@@ -7,9 +7,12 @@ use App\Http\Resources\AnimalsListResource;
 use App\Models\Animal;
 use App\Models\AnimalSize;
 use App\Models\AnimalSpecie;
+use App\Models\Association;
 use App\Models\Breed;
+use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AnimalController extends Controller
 {
@@ -81,5 +84,57 @@ class AnimalController extends Controller
     public function getAnimalSizes() {
         $sizes = AnimalSize::all();
         return $this->sendResponse($sizes, 'Lista de tamaño de animales');
+    }
+
+    /**
+     * update animal data
+     */
+    public function update(Request $request)
+    {
+        $association = auth('sanctum')->user();
+        if (class_basename($association) === 'Association' && Animal::find($request->id)->association_id === $association->id) {
+            Animal::whereId($request->id)->update($request->data);
+            $animal = Animal::find($request->id);
+            return $this->sendResponse($animal, 'Datos actualizados correctamente.');
+        }
+        return $this->sendError('No autorizado.', ['error' => 'Unauthorized'], 401);
+    }
+
+    /**
+     * Update the animal profile image
+     */
+    public function updateImage(Request $request) {
+        $account = auth('sanctum')->user();
+        if (class_basename($account) === 'Association') {
+            $user = Association::find($account->id);
+        } else {
+            return $this->sendError('No autorizado.', ['error' => 'Unauthorized'], 401);
+        }
+        $animal = Animal::find($request->animal_id);
+        if (!$animal) {
+            return $this->sendError('No se encuentra el animal seleccionado.', ['error' => 'Unauthorized'], 401);
+        }
+
+        if (!$request->image) {
+            $animal['image'] = null;
+            $animal->save();
+            return $this->sendResponse(null, 'Imagen actualizada.');
+        } else {
+            $image_64 = $request->image; // base64 encoded data
+            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+            $replace = substr($image_64, 0, strpos($image_64, ',')+1);
+            // find substring fro replace here eg: data:image/png;base64,
+            $image = str_replace($replace, '', $image_64);
+            $image = str_replace(' ', '+', $image);
+
+
+            $image_name = 'animal/'.$animal->id.'-'.time().'.'.$extension;
+            // return $image_name;
+            Storage::disk('public')->put($image_name, base64_decode($image));
+
+            $animal['image'] = env('APP_URL', 'http://localhost').'/storage/'.$image_name;
+            $animal->save();
+            return $this->sendResponse(null, 'Imagen de perfil actualizada.');
+        }
     }
 }

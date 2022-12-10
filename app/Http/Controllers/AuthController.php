@@ -131,30 +131,35 @@ class AuthController extends Controller
 
 
     public function storageProfileImage(Request $request) {
-        if (!$request->image) {
-            return;
-        }
-        $image_64 = $request->image; //your base64 encoded data
-        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
-        $replace = substr($image_64, 0, strpos($image_64, ',')+1);
-        // find substring fro replace here eg: data:image/png;base64,
-        $image = str_replace($replace, '', $image_64);
-        $image = str_replace(' ', '+', $image);
-
-
         $account = auth('sanctum')->user();
         $role = class_basename($account) === 'User' ? 'user' : 'association';
-        $image_name = $role.'/'.$account->id.'-'.time().'.'.$extension;
         if ($role === 'user') {
             $user = User::find($account->id);
         } else {
             $user = Association::find($account->id);
         }
 
-        Storage::disk('public')->put($image_name, base64_decode($image));
+        if (!$request->image) {
+            $user['profile_image'] = null;
+            $user->save();
+            return $this->sendResponse(null, 'Imagen de perfil actualizada.');
+        } else {
+            $image_64 = $request->image; // base64 encoded data
+            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+            $replace = substr($image_64, 0, strpos($image_64, ',')+1);
+            // find substring fro replace here eg: data:image/png;base64,
+            $image = str_replace($replace, '', $image_64);
+            $image = str_replace(' ', '+', $image);
 
-        $user['profile_image'] = env('APP_URL', 'http://localhost').'/storage/'.$image_name;
-        $user->save();
+
+            $image_name = $role.'/'.$account->id.'-'.time().'.'.$extension;
+
+            Storage::disk('public')->put($image_name, base64_decode($image));
+
+            $user['profile_image'] = env('APP_URL', 'http://localhost').'/storage/'.$image_name;
+            $user->save();
+            return $this->sendResponse(null, 'Imagen de perfil actualizada.');
+        }
     }
 
     /**
