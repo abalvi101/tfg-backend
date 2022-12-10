@@ -23,6 +23,7 @@ class AnimalController extends Controller
     }
 
     public function getFilteredAnimals(Request $request) {
+        // dd($request->all());
         $animals = AnimalsListResource::collection(
             Animal::query()
             ->when($request->specie, function ($query, $specie) {
@@ -33,6 +34,18 @@ class AnimalController extends Controller
             })
             ->when($request->size, function ($query, $size) {
                 $query->where('size_id', '=', $size);
+            })
+            ->when($request->province, function ($query, $province) {
+                $query->where('province_id', '=', $province);
+            })
+            ->when($request->city, function ($query, $city) {
+                $query->where('city_id', '=', $city);
+            })
+            ->when(isset($request->neutered), function ($query, $neutered) {
+                $query->where('neutered', $neutered === "true" ? true : false);
+            })
+            ->when(isset($request->gender), function ($query, $gender) {
+                $query->where('gender', $gender === "true" ? true : false);
             })
             ->get()
         );
