@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\AnimalResource;
 use App\Http\Resources\AnimalsListResource;
 use App\Models\Animal;
+use App\Models\AnimalDisease;
 use App\Models\AnimalSize;
 use App\Models\AnimalSpecie;
 use App\Models\Association;
@@ -187,6 +188,46 @@ class AnimalController extends Controller
             if ($fostering->first()) {
                 $fostering->delete();
                 return $this->sendResponse(null, 'Acogida eliminada');
+            }
+        }
+        return $this->sendError('No autorizado.', ['error' => 'Unauthorized'], 401);
+    }
+
+    /**
+     * Store/update disease
+     */
+    public function storeDisease(Request $request) {
+        $animal = Animal::find($request->animal_id);
+        $user = auth('sanctum')->user();
+        if (class_basename($user) === 'Association' && $animal->association_id === $user->id) {
+            $disease = AnimalDisease::where('animal_id', '=', $request->animal_id);
+            if ($disease->first()) {
+                $disease->update($request->data);
+                $disease = $disease->first();
+            } else {
+                $disease = new AnimalDisease;
+                $disease->fill($request->data);
+                $disease['animal_id'] = $request->animal_id;
+                $disease->save();
+            }
+
+            return $this->sendResponse($disease, 'Enfermedad actualizada');
+        } else {
+            return $this->sendError('No autorizado.', ['error' => 'Unauthorized'], 401);
+        }
+    }
+
+    /**
+     * Delete disease
+     */
+    public function deleteDisease(Request $request) {
+        $animal = Animal::find($request->animal_id);
+        $user = auth('sanctum')->user();
+        if (class_basename($user) === 'Association' && $animal->association_id === $user->id) {
+            $disease = AnimalDisease::where('animal_id', '=', $request->animal_id);
+            if ($disease->first()) {
+                $disease->delete();
+                return $this->sendResponse(null, 'Enfermedad eliminada');
             }
         }
         return $this->sendError('No autorizado.', ['error' => 'Unauthorized'], 401);
