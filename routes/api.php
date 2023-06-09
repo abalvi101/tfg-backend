@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\AssociationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -55,7 +56,16 @@ Route::prefix('animals')->group(function () {
             Route::post('/updateImage', 'updateImage');
             Route::post('/storeFostering', 'storeFostering');
             Route::post('/deleteFostering', 'deleteFostering');
+            Route::post('/storeDisease', 'storeDisease');
+            Route::post('/deleteDisease', 'deleteDisease');
         });
+    });
+});
+
+Route::prefix('associations')->group(function () {
+    Route::controller(AssociationController::class)->group(function () {
+        Route::post('/getFilteredAssociations', 'getFilteredAssociations');
+        Route::post('/getAssociationInfo', 'getAssociationInfo');
     });
 });
 
