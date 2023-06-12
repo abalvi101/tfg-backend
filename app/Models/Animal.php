@@ -82,9 +82,9 @@ class Animal extends Model
     /**
      * Get the diseases of the animal.
      */
-    public function diseases()
+    public function disease()
     {
-        return $this->hasMany(AnimalDisease::class, 'animal_id');
+        return $this->hasOne(AnimalDisease::class, 'animal_id');
     }
 
     /**

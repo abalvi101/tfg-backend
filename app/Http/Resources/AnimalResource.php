@@ -54,7 +54,7 @@ class AnimalResource extends JsonResource
             'breed_id' => $this->breed->id,
             'size' => $this->size,
             'size_id' => $this->size->id,
-            'diseases' => $this->diseases,
+            'disease' => $this->disease,
             'fostering' => $this->fostering,
             'owner' => $owner,
             'favourite' => $favourite,
