@@ -116,6 +116,21 @@ class AnimalController extends Controller
     }
 
     /**
+     * dalete animal data
+     */
+    public function delete(Request $request)
+    {
+        $association = auth('sanctum')->user();
+        if (class_basename($association) === 'Association' && Animal::find($request->id)->association_id === $association->id) {
+            Animal::whereId($request->id)->update($request->data);
+            $animal = Animal::find($request->id);
+            $animal->delete();
+            return $this->sendResponse(null, 'Registro de animal eliminado.');
+        }
+        return $this->sendError('No autorizado.', ['error' => 'Unauthorized'], 401);
+    }
+
+    /**
      * Update the animal profile image
      */
     public function updateImage(Request $request) {

@@ -53,6 +53,7 @@ Route::prefix('animals')->group(function () {
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/create', 'create');
             Route::post('/update', 'update');
+            Route::post('/delete', 'delete');
             Route::post('/updateImage', 'updateImage');
             Route::post('/storeFostering', 'storeFostering');
             Route::post('/deleteFostering', 'deleteFostering');
