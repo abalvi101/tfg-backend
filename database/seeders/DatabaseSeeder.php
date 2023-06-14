@@ -28,7 +28,11 @@ class DatabaseSeeder extends Seeder
             BreedSeeder::class,
             ProvinceSeeder::class,
             CitySeeder::class,
+            AssociationSeeder::class,
             UserSeeder::class,
+            AnimalSeeder::class,
+            AnimalDiseaseSeeder::class,
+            FosteringSeeder::class,
         ]);
     }
 }

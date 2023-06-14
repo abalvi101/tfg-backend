@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable
+class Association extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
@@ -20,11 +19,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'surname',
         'email',
         'password',
-        'birthday',
-        'gender',
+        'about_us',
+        'province_id',
+        'city_id',
+        'postal_code',
         'profile_image',
     ];
 
@@ -45,19 +45,10 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'birthday' => 'datetime',
     ];
 
     /**
-     * Get the role of the user.
-     */
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
-
-    /**
-     * Get the city of the animal.
+     * Get the city of the association.
      */
     public function city()
     {
@@ -65,7 +56,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the province of the animal.
+     * Get the province of the association.
      */
     public function province()
     {
@@ -73,10 +64,10 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the favourites animals.
+     * Get the animals of the association.
      */
-    public function favourites()
+    public function animals()
     {
-        return $this->belongsToMany(Animal::class);
+        return $this->hasMany(Animal::class);
     }
 }

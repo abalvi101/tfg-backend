@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AnimalSpecieSeeder extends Seeder
 {
@@ -16,8 +16,8 @@ class AnimalSpecieSeeder extends Seeder
     public function run()
     {
         DB::table('animal_species')->insert([
-            ['name' => 'dog'],
-            ['name' => 'cat'],
+            ['name' => 'Perro'],
+            ['name' => 'Gato'],
         ]);
     }
 }

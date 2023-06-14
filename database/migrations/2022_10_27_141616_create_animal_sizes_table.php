@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('animal_sizes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('animal_specie_id');
+            // $table->unsignedBigInteger('animal_specie_id');
             $table->string('name');
             $table->string('code');
             $table->timestamps();
-            
-            $table->foreign('animal_specie_id')->references('id')->on('animal_species');
+
+            // $table->foreign('animal_specie_id')->references('id')->on('animal_species');
         });
     }
 

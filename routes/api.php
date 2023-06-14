@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\AssociationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LocationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +22,58 @@ use App\Http\Controllers\AuthController;
 //     return $request->user();
 // });
 
-Route::post('/user', [AuthController::class, 'login']);
+Route::prefix('auth')->group(function () {
+    Route::controller(AuthController::class)->group(function () {
+        Route::post('/register', 'register');
+        Route::post('/login', 'login');
+        Route::get('/getUser', 'getUser');
+        Route::get('/getUserInfo', 'getUserInfo');
+        Route::post('/submitImage', 'storageProfileImage');
+        Route::middleware(['auth:sanctum'])->group(function () {
+            Route::post('/update', 'update');
+            Route::post('/favourite', 'favourite');
+        });
+    });
+});
+
+Route::prefix('location')->group(function () {
+    Route::controller(LocationController::class)->group(function () {
+        Route::get('/getProvinces', 'getProvinces');
+        Route::get('/getCities', 'getCities');
+    });
+});
+
+Route::prefix('animals')->group(function () {
+    Route::controller(AnimalController::class)->group(function () {
+        Route::post('/getFilteredAnimals', 'getFilteredAnimals');
+        Route::get('/getSpecies', 'getAnimalSpecies');
+        Route::get('/getBreeds', 'getAnimalBreeds');
+        Route::get('/getSizes', 'getAnimalSizes');
+        Route::post('/getAnimalInfo', 'getAnimalInfo');
+        Route::middleware(['auth:sanctum'])->group(function () {
+            Route::post('/create', 'create');
+            Route::post('/update', 'update');
+            Route::post('/delete', 'delete');
+            Route::post('/updateImage', 'updateImage');
+            Route::post('/storeFostering', 'storeFostering');
+            Route::post('/deleteFostering', 'deleteFostering');
+            Route::post('/storeDisease', 'storeDisease');
+            Route::post('/deleteDisease', 'deleteDisease');
+        });
+    });
+});
+
+Route::prefix('associations')->group(function () {
+    Route::controller(AssociationController::class)->group(function () {
+        Route::post('/getFilteredAssociations', 'getFilteredAssociations');
+        Route::post('/getAssociationInfo', 'getAssociationInfo');
+    });
+});
+
+Route::get('animals/index', [AnimalController::class, 'index']);
 
 Route::post('/tokens/create', function (Request $request) {
     $token = $request->user()->createToken($request->token_name);
- 
+
     return ['token' => $token->plainTextToken];
 });
